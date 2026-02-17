@@ -1,65 +1,128 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useEffect, useState } from "react";
+import Link from "next/link";
+interface Client {
+  id: number;
+  fullname: string;
+  email: string;
+  status: string;
+  createdAt: string;
+}
+
+export default function ClientsPage() {
+  const [clients, setClients] = useState<Client[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [search, setSearch] = useState("");
+
+  const fetchClientes = async (query = "") => {
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch(`/api/clients?q=${query}`);
+      if (!res.ok) throw new Error("Error al conectar con la API");
+      const data = await res.json();
+      setClients(data);
+    } catch (err: any) {
+      setError(err.message || "Ocurrió un error inesperado");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchClientes();
+  }, []);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <div className="bg-white max-w-6xl mx-auto p-6 md:p-10">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold text-gray-800">Gestión de Clientes</h1>
+        <Link
+          href="/clients/new"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition"
+        >
+          + Nuevo Cliente
+        </Link>
+      </div>
+
+      {/* BUSCADOR */}
+      <div className="mb-6">
+        <input
+          type="text"
+          placeholder="🔍 Buscar por nombre o email..."
+          className="w-full p-3 border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 outline-none text-black"
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            fetchClientes(e.target.value);
+          }}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+      </div>
+
+      {loading && (
+        <div className="text-center py-10">
+          <p className="text-blue-600 font-medium animate-pulse">Cargando clientes...</p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      )}
+
+      {error && (
+        <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
+          <p className="text-red-700">{error}</p>
         </div>
-      </main>
+      )}
+
+      {/* TABLA DE RESULTADOS */}
+      {!loading && !error && (
+        <div className="bg-white shadow-md rounded-xl overflow-hidden border border-gray-200">
+          <table className="min-w-full leading-normal">
+            <thead>
+              <tr className="bg-gray-50 text-gray-600 text-sm uppercase">
+                <th className="px-5 py-4 border-b text-left font-semibold">Nombre</th>
+                <th className="px-5 py-4 border-b text-left font-semibold">Email</th>
+                <th className="px-5 py-4 border-b text-center font-semibold">Estado</th>
+                <th className="px-5 py-4 border-b text-center font-semibold">Creado</th>
+                <th className="px-5 py-4 border-b text-center font-semibold">Acciones</th>
+              </tr>
+            </thead>
+            <tbody className="text-gray-700">
+              {clients.length > 0 ? (
+                clients.map((client) => (
+                  <tr key={client.id} className="hover:bg-gray-50 transition border-b border-gray-100">
+                    <td className="px-5 py-4 text-sm font-medium">{client.fullname}</td>
+                    <td className="px-5 py-4 text-sm">{client.email}</td>
+                    <td className="px-5 py-4 text-center">
+                      <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                        client.status ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                      }`}>
+                        {client.status ? 'Activo' : 'Inactivo'}
+                      </span>
+                    </td>
+                    <td className="px-5 py-4 text-center text-sm text-gray-500">
+                      {new Date(client.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="px-5 py-4 text-center">
+                      <Link
+                        href={`/clients/${client.id}`}
+                        className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-lg text-sm transition"
+                      >
+                        Editar
+                      </Link>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={4} className="px-5 py-10 text-center text-gray-500 italic">
+                    No se encontraron clientes que coincidan.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }
