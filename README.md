@@ -23,3 +23,11 @@ cd next-example/
 
 ```bash
 docker compose up --build -d
+```
+## 🔹 Prueba en Postman
+
+1. El import .json se encuentra en la siguiente ruta:
+
+```bash
+cd app/api/clients/apijson.json
+```
