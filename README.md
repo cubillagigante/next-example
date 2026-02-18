@@ -9,6 +9,7 @@ Este proyecto es una aplicación de gestión de clientes desarrollada con **Next
 - [Docker](https://www.docker.com/get-started)
 - [Docker Compose](https://docs.docker.com/compose/)
 - [Postman](https://www.postman.com/) (opcional, para probar la API)
+- pnpm (opcional si se usa docker, es para instalar dependencias)
 
 ---
 
@@ -21,12 +22,14 @@ git clone git@github.com:cubillagigante/next-example.git
 cd next-example/
 ```
 
+2. Levantar Docker
+
 ```bash
 docker compose up --build -d
 ```
 ## 🔹 Prueba en Postman
 
-1. El import .json se encuentra en la siguiente ruta:
+3. El import .json se encuentra en la siguiente ruta:
 
 ```bash
 cd app/api/clients/apijson.json
