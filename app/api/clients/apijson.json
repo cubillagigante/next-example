@@ -1,16 +1,41 @@
 {
   "info": {
-    "name": "Clientes API",
-    "_postman_id": "12345678-abcd-efgh-ijkl-1234567890ab",
-    "description": "Colección Postman para probar la API de clientes",
+    "name": "Clients API",
+    "_postman_id": "b6c2a2f7-1234-5678-90ab-abcdef123456",
+    "description": "Colección para probar la API de clientes (Next.js + Prisma).",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
     {
-      "name": "Listar clientes",
+      "name": "List Clients",
       "request": {
         "method": "GET",
         "header": [],
+        "url": {
+          "raw": "http://localhost:3000/api/clients?q=&page=1&limit=5",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "clients"],
+          "query": [
+            { "key": "page", "value": "1" },
+            { "key": "limit", "value": "5" }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Client",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"fullname\": \"Diego Perez\",\n  \"email\": \"diego@example.com\",\n  \"status\": true\n}"
+        },
         "url": {
           "raw": "http://localhost:3000/api/clients",
           "protocol": "http",
@@ -22,23 +47,7 @@
       "response": []
     },
     {
-      "name": "Buscar clientes",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "http://localhost:3000/api/clients?q=Juan",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3000",
-          "path": ["api", "clients"],
-          "query": [{"key": "q", "value": "Juan"}]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Detalle cliente",
+      "name": "Get Client by ID",
       "request": {
         "method": "GET",
         "header": [],
@@ -53,36 +62,15 @@
       "response": []
     },
     {
-      "name": "Crear cliente",
-      "request": {
-        "method": "POST",
-        "header": [
-          {"key": "Content-Type", "value": "application/json"}
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"fullname\": \"Juan Pérez\",\n  \"email\": \"juan@example.com\",\n  \"status\": true\n}"
-        },
-        "url": {
-          "raw": "http://localhost:3000/api/clients",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3000",
-          "path": ["api", "clients"]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Editar cliente",
+      "name": "Update Client",
       "request": {
         "method": "PATCH",
         "header": [
-          {"key": "Content-Type", "value": "application/json"}
+          { "key": "Content-Type", "value": "application/json" }
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"fullname\": \"Juan Pérez Actualizado\",\n  \"email\": \"juan@example.com\",\n  \"status\": false\n}"
+          "raw": "{\n  \"fullname\": \"Diego Updated\",\n  \"status\": false\n}"
         },
         "url": {
           "raw": "http://localhost:3000/api/clients/1",
