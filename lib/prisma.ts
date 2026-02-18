@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client"; // ✅ DEBE DECIR ESTO, NO EL PATH LARGO
+import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
 
