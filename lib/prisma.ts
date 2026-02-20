@@ -1,17 +1,19 @@
 import { PrismaClient } from "@prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
-import { Pool } from "pg";
+import { PrismaLibSql } from "@prisma/adapter-libsql";
 
-const connectionString = process.env.DATABASE_URL;
-const pool = new Pool({ connectionString });
-const adapter = new PrismaPg(pool);
-
-const globalForPrisma = global as unknown as { prisma: PrismaClient };
-
-export const prisma = globalForPrisma.prisma || new PrismaClient({
-  adapter,
+// El constructor pide 'Config', que requiere la propiedad 'url'
+const adapter = new PrismaLibSql({
+  url: "file:./prisma/dev.db",
 });
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+// Definimos la interfaz global para evitar el error de "Cannot find name"
+const globalForPrisma = global as unknown as { prisma: PrismaClient };
+
+export const prisma =
+  globalForPrisma.prisma || new PrismaClient({ adapter });
+
+if (process.env.NODE_ENV !== "production") {
+  globalForPrisma.prisma = prisma;
+}
 
 export default prisma;

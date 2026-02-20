@@ -15,8 +15,8 @@ export async function GET(request: NextRequest) {
     const total = await prisma.clients.count({
       where: {
         OR: [
-          { fullname: { contains: q, mode: "insensitive" } },
-          { email: { contains: q, mode: "insensitive" } },
+          { fullname: { contains: q } },
+          { email: { contains: q } },
         ],
       },
     });
@@ -24,8 +24,8 @@ export async function GET(request: NextRequest) {
     const clients = await prisma.clients.findMany({
       where: {
         OR: [
-          { fullname: { contains: q, mode: "insensitive" } },
-          { email: { contains: q, mode: "insensitive" } },
+          { fullname: { contains: q } },
+          { email: { contains: q } },
         ],
       },
       orderBy: { createdAt: "desc" },
